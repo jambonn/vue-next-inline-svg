@@ -1,6 +1,6 @@
 {
   "name": "@jambonn/vue-inline-svg",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Replace SVG images with inline SVG element",
   "keywords": [
     "vue",
@@ -52,6 +52,6 @@
     "vue": "^3.0.11"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=12.x <14.x"
   }
 }
