@@ -1,0 +1,57 @@
+{
+  "name": "@jambonn/vue-inline-svg",
+  "version": "1.0.0",
+  "description": "Replace SVG images with inline SVG element",
+  "keywords": [
+    "vue",
+    "vue 3",
+    "svg",
+    "inline",
+    "inject",
+    "image",
+    "replace"
+  ],
+  "homepage": "https://jambonn.github.io/vue-inline-svg/",
+  "bugs": {
+    "url": "https://github.com/jambonn/vue-inline-svg/issues"
+  },
+  "license": "MIT",
+  "author": "Jambon <hoaeuro93@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jambonn/vue-inline-svg.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build:lib": "vite build --mode lib",
+    "build:demo": "vite build --mode demo",
+    "serve": "vite preview"
+  },
+  "main": "dist/vue-inline-svg.cjs.js",
+  "browser": "dist/vue-inline-svg.es.js",
+  "module": "dist/vue-inline-svg.es.js",
+  "unpkg": "dist/vue-inline-svg.iife.js",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.2.1",
+    "@vue/compiler-sfc": "^3.0.5",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "eslint": "^7.23.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-vue": "^7.8.0",
+    "prettier": "^2.2.1",
+    "vite": "^2.1.5",
+    "vue": "^3.0.11"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.11"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
