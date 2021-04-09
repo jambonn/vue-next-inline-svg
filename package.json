@@ -1,6 +1,6 @@
 {
   "name": "@jambonn/vue-inline-svg",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Replace SVG images with inline SVG element",
   "keywords": [
     "vue",
@@ -27,10 +27,10 @@
     "build:demo": "vite build --mode demo",
     "serve": "vite preview"
   },
-  "main": "dist/vue-inline-svg.cjs.js",
-  "browser": "dist/vue-inline-svg.es.js",
-  "module": "dist/vue-inline-svg.es.js",
-  "unpkg": "dist/vue-inline-svg.iife.js",
+  "main": "lib/vue-inline-svg.cjs.js",
+  "browser": "lib/vue-inline-svg.es.js",
+  "module": "lib/vue-inline-svg.es.js",
+  "unpkg": "lib/vue-inline-svg.iife.js",
   "files": [
     "lib"
   ],
