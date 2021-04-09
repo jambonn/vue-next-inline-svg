@@ -3,13 +3,13 @@
     <img alt="Vue logo" src="./assets/logo.png" />
     <div class="action">
       <a
-        href="https://github.com/jambonn/vue-next-inline-svg#install"
+        href="https://github.com/FrontLabsOfficial/vue-inline-svg#install"
         class="button"
       >
         Get started
       </a>
       <a
-        href="https://github.com/jambonn/vue-next-inline-svg#readme"
+        href="https://github.com/FrontLabsOfficial/vue-inline-svg#readme"
         class="button white"
       >
         Github
