@@ -1,6 +1,6 @@
 {
   "name": "@jambonn/vue-inline-svg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Replace SVG images with inline SVG element",
   "keywords": [
     "vue",
@@ -11,7 +11,7 @@
     "image",
     "replace"
   ],
-  "homepage": "https://relaxed-brown-94f056.netlify.app/",
+  "homepage": "https://jambonn-vue-inline-svg.netlify.app/",
   "bugs": {
     "url": "https://github.com/jambonn/vue-inline-svg/issues"
   },
