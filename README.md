@@ -103,9 +103,9 @@ Path to SVG file
 
 Note: if you use vitejs, then paths like '../assets/my.svg' will not be handled by file-loader automatically like vitejs do for `<img>` tag, so you will need to use it with `import.meta.globEager()`:
 ```html
-<inline-svg :src="`${icons[`/assets/icons/${icon}.svg`].default}`" />
+<inline-svg :src="`${icons['/assets/icons/my.svg'].default}`" />
 <script>
-  const icons = import.meta.globEager('/assets/icons/*.svg')
+  const icons = import.meta.globEager('/assets/icons/my.svg')
 
   export default {
     setup() {
@@ -117,6 +117,13 @@ Note: if you use vitejs, then paths like '../assets/my.svg' will not be handled 
 Learn more:
 - https://vitejs.dev/guide/features.html#glob-import
 
+Note: if you use vue-loader assets or vue-cli, then paths like '../assets/my.svg' will not be handled by file-loader automatically like vue-cli do for `<img>` tag, so you will need to use it with `require`:
+```html
+<inline-svg :src="require('../assets/my.svg')"/>
+```
+Learn more:
+- https://vue-loader.vuejs.org/guide/asset-url.html#transform-rules
+- https://cli.vuejs.org/guide/html-and-static-assets.html#static-assets-handling
 
 #### - `title`
 Sets/overwrites the `<title>` of the SVG

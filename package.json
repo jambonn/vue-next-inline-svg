@@ -11,7 +11,7 @@
     "image",
     "replace"
   ],
-  "homepage": "https://jambonn.github.io/vue-inline-svg/",
+  "homepage": "https://relaxed-brown-94f056.netlify.app/",
   "bugs": {
     "url": "https://github.com/jambonn/vue-inline-svg/issues"
   },
@@ -52,6 +52,6 @@
     "vue": "^3.0.11"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=12"
   }
 }

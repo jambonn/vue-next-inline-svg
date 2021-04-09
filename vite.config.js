@@ -13,7 +13,7 @@ export default ({ command, mode }) => {
     plugins: [vue()],
   }
 
-  if (mode === 'demo') {
+  if (!isProd || mode === 'demo') {
     config.root = `${process.cwd()}/demo`
     config.build = {
       outDir: `${process.cwd()}/dist`,

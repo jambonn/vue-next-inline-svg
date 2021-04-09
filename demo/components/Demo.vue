@@ -57,6 +57,7 @@ li .icon {
 }
 
 button .icon {
+  cursor: pointer;
   margin-left: 0.5ch;
   color: #00bfff;
 }
@@ -77,21 +78,6 @@ ul {
 
 li + li {
   margin-top: 0.25em;
-}
-
-button {
-  color: #fff;
-  font-size: 1em;
-  padding: 0.5em 1em;
-  background: #667;
-  border: 0;
-  border-bottom: 2px solid #00bfff;
-  border-radius: 4px;
-  outline: none;
-}
-
-button:hover {
-  background: #778;
 }
 
 .please-wait,

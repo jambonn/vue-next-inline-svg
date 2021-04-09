@@ -6,7 +6,6 @@ module.exports = {
   extends: ['plugin:vue/vue3-essential', 'eslint:recommended', '@vue/prettier'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'vue/no-deprecated-dollar-listeners-api': 'off',
   },
   parserOptions: {
