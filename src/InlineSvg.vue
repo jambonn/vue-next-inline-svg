@@ -5,13 +5,14 @@
     v-bind="Object.assign({}, getSvgAttrs(svgElSource), filterAttrs($attrs))"
     v-html="getSvgContent(svgElSource)"
   ></svg>
+  <svg v-else></svg>
 </template>
 
 <script>
 import { ref, toRef, nextTick, watch, onMounted } from 'vue'
 
 /** @type Object{string: Promise<Element>} */
-const cache = ref({})
+const cache = {}
 
 export default {
   name: 'InlineSvg',
@@ -92,14 +93,14 @@ export default {
      */
     const getSource = src => {
       // fill cache by src with promise
-      if (!cache.value[src]) {
+      if (!cache[src]) {
         // download
-        cache.value[src] = download(src)
+        cache[src] = download(src)
       }
       // notify svg is unloaded
       if (
         svgElSource.value &&
-        cache.value[src].isPending() &&
+        cache[src].isPending() &&
         !props.keepDuringLoading
       ) {
         svgElSource.value = null
@@ -107,7 +108,7 @@ export default {
       }
 
       // inline svg when cached promise resolves
-      cache.value[src]
+      cache[src]
         .then(svg => {
           svgElSource.value = svg
           // wait to render
@@ -123,7 +124,7 @@ export default {
             ctx.emit('unloaded')
           }
           // remove cached rejected promise so next image can try load again
-          delete cache.value[src]
+          delete cache[src]
           ctx.emit('error', err)
         })
     }
