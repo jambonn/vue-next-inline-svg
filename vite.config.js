@@ -38,9 +38,6 @@ export default ({ command, mode }) => {
         name: 'VueInlineSvg',
         formats: ['es', 'cjs', 'umd'],
       },
-      terserOptions: {
-        ecma: 5,
-      },
     }
   }
 

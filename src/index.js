@@ -1,8 +1,8 @@
 import InlineSvgComponent from './InlineSvg.vue'
 
 const InlineSvgPlugin = {
-  install(Vue) {
-    Vue.component('inline-svg', InlineSvgComponent)
+  install(app) {
+    app.component('inline-svg', InlineSvgComponent)
   },
 }
 
