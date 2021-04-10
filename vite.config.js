@@ -10,7 +10,6 @@ export default ({ command, mode }) => {
     server: {
       port: 8080,
     },
-    plugins: [vue()],
   }
 
   if (!isProd || mode === 'demo') {
@@ -19,6 +18,7 @@ export default ({ command, mode }) => {
       outDir: `${process.cwd()}/dist`,
       emptyOutDir: true,
     }
+    config.plugins = [vue()]
   }
 
   if (mode === 'lib') {

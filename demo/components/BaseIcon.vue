@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import InlineSvg from '../../src/InlineSvg.vue'
+import InlineSvg from '../../src/index.js'
 
 const icons = import.meta.globEager('../assets/icons/*.svg')
 
