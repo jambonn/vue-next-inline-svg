@@ -5,6 +5,7 @@
     v-bind="Object.assign({}, getSvgAttrs(svgElSource), filterAttrs($attrs))"
     v-html="getSvgContent(svgElSource)"
   ></svg>
+  <svg v-else></svg>
 </template>
 
 <script>
