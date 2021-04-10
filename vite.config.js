@@ -36,7 +36,7 @@ export default ({ command, mode }) => {
       lib: {
         entry: path.resolve(__dirname, 'src/index.js'),
         name: 'VueInlineSvg',
-        formats: ['es', 'cjs', 'iife'],
+        formats: ['es', 'cjs', 'umd'],
       },
       terserOptions: {
         ecma: 5,
