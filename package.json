@@ -1,6 +1,6 @@
 {
   "name": "@jambonn/vue-inline-svg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Replace SVG images with inline SVG element",
   "keywords": [
     "vue",
