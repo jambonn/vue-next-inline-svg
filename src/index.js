@@ -1,12 +1,10 @@
-import { h as createElement, nextTick, onMounted, ref, toRef, watch } from 'vue'
+import { h as createElement } from 'vue'
 
 /** @type Object{string: Promise<Element>} */
 const cache = {}
 
 const InlineSvg = {
-  name: 'InlineSvg',
   inheritAttrs: false,
-  functional: true,
   render() {
     if (!this.svgElSource) {
       return null
@@ -27,12 +25,10 @@ const InlineSvg = {
   props: {
     src: {
       type: String,
-      default: '',
       required: true,
     },
     title: {
       type: String,
-      default: '',
     },
     transformSource: {
       type: Function,
@@ -43,16 +39,41 @@ const InlineSvg = {
       default: true,
     },
   },
-  emits: ['unloaded', 'loaded', 'error'],
-  setup(props, ctx) {
-    const src = toRef(props, 'src')
-    // type SVGElement
-    const svgElSource = ref(null)
-
-    // ref template
-    const inlineSvg = ref(null)
-
-    const getSvgAttrs = svgEl => {
+  emits: ['loaded', 'unloaded', 'error'],
+  data() {
+    return {
+      /** @type SVGElement */
+      svgElSource: null,
+    }
+  },
+  watch: {
+    src(newValue) {
+      // re-generate cached svg (`svgElSource`)
+      this.getSource(newValue)
+    },
+  },
+  mounted() {
+    // generate `svgElSource`
+    this.getSource(this.src)
+  },
+  methods: {
+    /**
+     * Remove false attrs
+     * @param {Object} attrs
+     */
+    filterAttrs(attrs) {
+      return Object.keys(attrs).reduce((result, key) => {
+        if (
+          attrs[key] !== false &&
+          attrs[key] !== null &&
+          attrs[key] !== undefined
+        ) {
+          result[key] = attrs[key]
+        }
+        return result
+      }, {})
+    },
+    getSvgAttrs(svgEl) {
       // copy attrs
       let svgAttrs = {}
       const attrs = svgEl.attributes
@@ -63,13 +84,106 @@ const InlineSvg = {
         svgAttrs[attrs[i].name] = attrs[i].value
       }
       return svgAttrs
-    }
+    },
+    getSvgContent(svgEl) {
+      svgEl = svgEl.cloneNode(true)
+      svgEl = this.transformSource(svgEl)
+      if (this.title) {
+        this.setTitle(svgEl, this.title)
+      }
+
+      // copy inner html
+      return svgEl.innerHTML
+    },
+    /**
+     * Get svgElSource
+     * @param {string} src
+     */
+    getSource(src) {
+      // fill cache by src with promise
+      if (!cache[src]) {
+        // download
+        cache[src] = this.download(src)
+      }
+      // notify svg is unloaded
+      if (
+        this.svgElSource &&
+        cache[src].isPending() &&
+        !this.keepDuringLoading
+      ) {
+        this.svgElSource = null
+        this.$emit('unloaded')
+      }
+
+      // inline svg when cached promise resolves
+      cache[src]
+        .then(svg => {
+          this.svgElSource = svg
+          // wait to render
+          this.$nextTick(() => {
+            // notify
+            this.$emit('loaded', this.$el)
+          })
+        })
+        .catch(err => {
+          // notify svg is unloaded
+          if (this.svgElSource) {
+            this.svgElSource = null
+            this.$emit('unloaded')
+          }
+          // remove cached rejected promise so next image can try load again
+          delete cache[src]
+          this.$emit('error', err)
+        })
+    },
+
+    /**
+     * Get the contents of the SVG
+     * @param {string} url
+     * @returns {Promise<Element>}
+     */
+    download(url) {
+      return this.makePromiseState(
+        new Promise((resolve, reject) => {
+          const request = new XMLHttpRequest()
+          request.open('GET', url, true)
+
+          request.onload = () => {
+            if (request.status >= 200 && request.status < 400) {
+              try {
+                // Setup a parser to convert the response to text/xml in order for it to be manipulated and changed
+                const parser = new DOMParser()
+                const result = parser.parseFromString(
+                  request.responseText,
+                  'text/xml',
+                )
+                let svgEl = result.getElementsByTagName('svg')[0]
+                if (svgEl) {
+                  // svgEl = this.transformSource(svgEl);
+                  resolve(svgEl)
+                } else {
+                  reject(new Error('Loaded file is not valid SVG"'))
+                }
+              } catch (e) {
+                reject(e)
+              }
+            } else {
+              reject(new Error('Error loading SVG'))
+            }
+          }
+
+          request.onerror = reject
+          request.send()
+        }),
+      )
+    },
+
     /**
      * Create or edit the <title> element of a SVG
      * @param {SVGElement} svg
      * @param {string} title
      */
-    const setTitle = (svg, title) => {
+    setTitle(svg, title) {
       const titleTags = svg.getElementsByTagName('title')
       if (titleTags.length) {
         // overwrite existing title
@@ -83,63 +197,19 @@ const InlineSvg = {
         titleEl.textContent = title
         svg.appendChild(titleEl)
       }
-    }
-    const getSvgContent = svgEl => {
-      svgEl = svgEl.cloneNode(true)
-      svgEl = props.transformSource(svgEl)
-      if (props.title) {
-        setTitle(svgEl, props.title)
-      }
+    },
 
-      // copy inner html
-      return svgEl.innerHTML
-    }
     /**
-     * Get svgElSource
-     * @param {string} src
+     * @typedef {Promise} PromiseWithState
+     * @property {Function<boolean>} isPending
      */
-    const getSource = src => {
-      // fill cache by src with promise
-      if (!cache[src]) {
-        // download
-        cache[src] = download(src)
-      }
-      // notify svg is unloaded
-      if (
-        svgElSource.value &&
-        cache[src].isPending() &&
-        !props.keepDuringLoading
-      ) {
-        svgElSource.value = null
-        ctx.emit('unloaded')
-      }
-
-      // inline svg when cached promise resolves
-      cache[src]
-        .then(svg => {
-          svgElSource.value = svg
-          // wait to render
-          nextTick(() => {
-            // notify
-            ctx.emit('loaded', inlineSvg.value)
-          })
-        })
-        .catch(err => {
-          // notify svg is unloaded
-          if (svgElSource.value) {
-            svgElSource.value = null
-            ctx.emit('unloaded')
-          }
-          // remove cached rejected promise so next image can try load again
-          delete cache[src]
-          ctx.emit('error', err)
-        })
-    }
 
     /**
      * This function allow you to modify a JS Promise by adding some status properties.
+     * @param {Promise|PromiseWithState} promise
+     * @return {PromiseWithState}
      */
-    const makePromiseState = promise => {
+    makePromiseState(promise) {
       // Don't modify any promise that has been already modified.
       if (promise.isPending) return promise
 
@@ -162,87 +232,8 @@ const InlineSvg = {
         return isPending
       }
       return result
-    }
-
-    /**
-     * Get the contents of the SVG
-     * @param {string} url
-     * @returns {Promise<Element>}
-     */
-    const download = url => {
-      return makePromiseState(
-        new Promise((resolve, reject) => {
-          const request = new XMLHttpRequest()
-          request.open('GET', url, true)
-
-          request.onload = () => {
-            if (request.status >= 200 && request.status < 400) {
-              try {
-                // Setup a parser to convert the response to text/xml in order for it to be manipulated and changed
-                const parser = new DOMParser()
-                const result = parser.parseFromString(
-                  request.responseText,
-                  'text/xml',
-                )
-                let svgEl = result.getElementsByTagName('svg')[0]
-                if (svgEl) {
-                  resolve(svgEl)
-                } else {
-                  reject(new Error('Loaded file is not valid SVG"'))
-                }
-              } catch (e) {
-                reject(e)
-              }
-            } else {
-              reject(new Error('Error loading SVG'))
-            }
-          }
-
-          request.onerror = reject
-          request.send()
-        }),
-      )
-    }
-    /**
-     * Remove false attrs
-     * @param {Object} attrs
-     */
-    const filterAttrs = attrs => {
-      return Object.keys(attrs).reduce((result, key) => {
-        if (
-          attrs[key] !== false &&
-          attrs[key] !== null &&
-          attrs[key] !== undefined
-        ) {
-          result[key] = attrs[key]
-        }
-        return result
-      }, {})
-    }
-
-    onMounted(() => {
-      // generate `svgElSource`
-      getSource(src.value)
-    })
-    watch(src, value => {
-      // re-generate cached svg (`svgElSource`)
-      getSource(value)
-    })
-
-    return {
-      inlineSvg,
-      svgElSource,
-      filterAttrs,
-      getSvgAttrs,
-      getSvgContent,
-    }
+    },
   },
 }
 
-const InlineSvgPlugin = {
-  install(app) {
-    app.component('inline-svg', InlineSvg)
-  },
-}
-export { InlineSvg, InlineSvgPlugin }
 export default InlineSvg

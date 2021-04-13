@@ -43,15 +43,13 @@ export default {
 
 Or register globally in the root Vue instance
 ```js
-import Vue from 'vue';
-
-// as a plugin
-import { InlineSvgPlugin } from '@jambonn/vue-inline-svg';
-Vue.use( InlineSvgPlugin );
-
-// or as a component
+import { createApp } from 'vue'
+// as a component
 import InlineSvg from '@jambonn/vue-inline-svg';
-Vue.component('vue-inline-svg', InlineSvg);
+
+const app = createApp(App);
+app.component('vue-inline-svg', InlineSvg);
+app.mount('#app')
 ```
 
 
@@ -63,15 +61,9 @@ Vue.component('vue-inline-svg', InlineSvg);
 <script src="https://unpkg.com/@jambonn/vue-inline-svg"></script>
 
 <script>
-// Register as a plugin
-Vue.use(VueInlineSvg.InlineSvgPlugin);
-
-// or as a component
-Vue.component('inline-svg', VueInlineSvg.InlineSvgComponent);
-
-new Vue({
-// ...
-});
+const app = Vue.createApp({})
+// Register as a component
+app.component('inline-svg', VueInlineSvg);
 </script>
 ```
 
